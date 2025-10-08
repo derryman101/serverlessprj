@@ -1,17 +1,28 @@
 {
   "name": "serverless-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Serverless API with Lambda and API Gateway",
+  "main": "lambda_function.py",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy:dev": "serverless deploy --stage dev",
+    "deploy:prod": "serverless deploy --stage prod",
+    "deploy:staging": "serverless deploy --stage staging",
+    "logs:dev": "serverless logs -f api --stage dev --tail",
+    "logs:prod": "serverless logs -f api --stage prod --tail",
+    "remove:dev": "serverless remove --stage dev",
+    "info": "serverless info",
+    "test": "pytest tests/ -v"
   },
-  "keywords": [],
+  "keywords": [
+    "serverless",
+    "aws",
+    "lambda",
+    "api"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "serverless-offline": "^14.4.0",
-    "serverless-python-requirements": "^6.1.2"
+    "serverless": "^3.40.0",
+    "serverless-python-requirements": "^6.1.0"
   }
 }
