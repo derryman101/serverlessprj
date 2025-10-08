@@ -1,0 +1,26 @@
+### Get all items
+GET https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/items
+
+### Get single item
+GET https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/items/1
+
+### Create new item
+POST https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/items
+Content-Type: application/json
+
+{
+  "name": "Test Item",
+  "description": "Created from VS Code"
+}
+
+### Update item
+PUT https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/items/1
+Content-Type: application/json
+
+{
+  "name": "Updated Item",
+  "description": "Updated from VS Code"
+}
+
+### Delete item
+DELETE https://your-api-id.execute-api.us-east-1.amazonaws.com/dev/items/1

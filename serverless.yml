@@ -1,0 +1,67 @@
+service: serverless-api
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  
+  # IAM permissions
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:service}-${self:provider.stage}-items"
+  
+  # Environment variables
+  environment:
+    ITEMS_TABLE: ${self:service}-${self:provider.stage}-items
+
+functions:
+  api:
+    handler: lambda_function.lambda_handler
+    events:
+      - http:
+          path: /items
+          method: get
+          cors: true
+      - http:
+          path: /items
+          method: post
+          cors: true
+      - http:
+          path: /items/{id}
+          method: get
+          cors: true
+      - http:
+          path: /items/{id}
+          method: put
+          cors: true
+      - http:
+          path: /items/{id}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    ItemsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:service}-${self:provider.stage}-items
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+plugins:
+  - serverless-python-requirements
