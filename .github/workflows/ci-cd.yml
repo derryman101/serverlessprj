@@ -1,4 +1,4 @@
-name: Serverless API CI/CD
+name: Deploy Serverless API to AWS
 
 on:
   push:
@@ -7,33 +7,23 @@ on:
 
 jobs:
   deploy:
-    name: Build and Deploy to AWS
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout your repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 18
+          python-version: '3.9'
 
-      # Step 3: Install project dependencies
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
 
-      # Step 4: Skip tests (placeholder until you add real ones)
-      - name: Skip tests (no tests defined yet)
-        run: echo "Skipping tests for now..."
-
-      # Step 5: Install the Serverless Framework
-      - name: Install Serverless Framework
-        run: npm install -g serverless
-
-      # Step 6: Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,8 +31,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Step 7: Deploy to AWS using Serverless Framework
-      - name: Deploy to AWS with Serverless
-        env:
-          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
-        run: sls deploy --stage prod
+      - name: Install Serverless Framework v3
+        run: |
+          npm install -g serverless@3
+
+      - name: Deploy to AWS
+        run: |
+          sls deploy --stage prod
